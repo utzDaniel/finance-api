@@ -1,0 +1,13 @@
+{
+  "realm": "finance-dev",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "finance-client",
+      "publicClient": false,
+      "secret": "change-me",
+      "redirectUris": ["*"]
+    }
+  ],
+  "users": []
+}
