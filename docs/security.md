@@ -178,7 +178,6 @@ Onde:
 
 - finance.read → leitura de dados financeiros
 - finance.write → permite criação e atualização
-- finance.delete → permite exclusão
 
 ---
 
@@ -190,7 +189,6 @@ Onde:
 | GET | /api/v1/finances | finance.read |
 | POST | /api/v1/finances | finance.write |
 | PUT | /api/v1/finances/{id} | finance.write |
-| DELETE | /api/v1/finances/{id} | finance.delete |
 
 ---
 

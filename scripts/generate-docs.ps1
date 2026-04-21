@@ -1,4 +1,15 @@
-﻿<!DOCTYPE html>
+$specPath = "docs\openapi\spec.json"
+$outputPath = "docs\openapi\spec.html"
+
+if (-not (Test-Path $specPath)) {
+    Write-Error "spec.json nao encontrado em $specPath"
+    exit 1
+}
+
+$spec = Get-Content $specPath -Raw -Encoding UTF8
+
+$html = @"
+<!DOCTYPE html>
 <html>
   <head>
     <title>API Financeira</title>
@@ -10,8 +21,12 @@
     <div id="redoc-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/redoc/bundles/redoc.standalone.js"></script>
     <script>
-      var spec = {"openapi":"3.0.1","info":{"title":"API Financeira","description":"API para gestão de lançamentos financeiros","version":"1.0.0"},"servers":[{"url":"http://localhost:8080","description":"Local"}],"security":[{"bearerAuth":[]}],"paths":{},"components":{"securitySchemes":{"bearerAuth":{"type":"http","description":"Token JWT obtido via Keycloak","scheme":"bearer","bearerFormat":"JWT"}}}};
+      var spec = $spec;
       Redoc.init(spec, {}, document.getElementById('redoc-container'));
     </script>
   </body>
 </html>
+"@
+
+$html | Out-File -FilePath $outputPath -Encoding UTF8
+Write-Host "spec.html gerado com sucesso em $outputPath"

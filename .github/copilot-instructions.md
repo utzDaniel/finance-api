@@ -96,6 +96,24 @@ Para cada nova implementação, o Copilot DEVE:
 
 ---
 
+### 6. Atualizar o README dos Planos
+
+- Se um plano de execução foi executado:
+    - Atualizar o status do plano (ex: `approved` → `completed`)
+    - Adicionar ou atualizar a entrada correspondente em `docs/plans/README.md`
+    - A entrada DEVE incluir: nome do arquivo, descrição resumida e status atual
+
+---
+
+### 7. Comandos de Build e Testes (OBRIGATÓRIO)
+
+- Sempre usar `mvn clean` antes de qualquer build ou execução de testes para garantir que o cache do Maven não interfira nos resultados
+- Comando para build: `mvn clean package -DskipTests`
+- Comando para testes: `mvn clean test`
+- Nunca usar `mvn package` ou `mvn test` sem o `clean`
+
+---
+
 ## Exemplo de Fluxo de Trabalho
 
 Ao criar um novo recurso:
@@ -106,3 +124,4 @@ Ao criar um novo recurso:
 4. Criar testes unitários
 5. Garantir que todos os testes sejam aprovados
 6. Garantir que a documentação seja atualizada
+7. Atualizar `docs/plans/README.md` com o status do plano executado

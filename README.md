@@ -59,8 +59,10 @@ A documentação da API é gerada a partir da especificação OpenAPI.
 
 ### Acesso Adicional
 
-- Swagger UI: `/swagger-ui.html`
+- Swagger UI: `/swagger-ui/index.html` (público, sem autenticação)
 - OpenAPI JSON: `/v3/api-docs`
+- Actuator Health: `/actuator/health` (público)
+- Actuator Info: `/actuator/info` (público)
 
 ---
 

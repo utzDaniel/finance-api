@@ -1,6 +1,6 @@
 # Plano: Security, Swagger, ActiveMQ e Actuator
 
-Status: approved
+Status: completed
 
 Autor: Daniel
 
@@ -47,7 +47,7 @@ redirect para página de login ao acessar o Swagger.
      - `GET /api/v1/finances/**` → `hasAuthority("finance.read")`
      - `POST /api/v1/finances` → `hasAuthority("finance.write")`
      - `PUT /api/v1/finances/**` → `hasAuthority("finance.write")`
-     - `DELETE /api/v1/finances/**` → `hasAuthority("finance.delete")`
+     - `DELETE /api/v1/finances/**` → `hasAuthority("finance.write")`
    - `AuthenticationEntryPoint` customizado → retorna `401 Unauthorized` em JSON (sem redirect)
    - `AccessDeniedHandler` customizado → retorna `403 Forbidden` em JSON
 
@@ -67,7 +67,7 @@ redirect para página de login ao acessar o Swagger.
 
 ### Phase 6 — `realm-export.json` *(atualizar)*
 
-12. Adicionar `clientScopes` para `finance.read`, `finance.write`, `finance.delete`:
+12. Adicionar `clientScopes` para `finance.read`, `finance.write`:
     - Mapper de protocolo para incluir os valores no claim `scope` do JWT
     - Associar ao client `finance-client` via `optionalClientScopes`
 
@@ -101,7 +101,7 @@ redirect para página de login ao acessar o Swagger.
 3. `GET http://localhost:8080/actuator/health` → `200 {"status":"UP"}`
 4. `GET http://localhost:8080/api/v1/finances` sem token → `401 JSON` (sem redirect 302)
 5. `GET http://localhost:8080/api/v1/finances` com token + scope `finance.read` → `200`
-6. `DELETE http://localhost:8080/api/v1/finances/1` com token sem `finance.delete` → `403 JSON`
+6. `POST http://localhost:8080/api/v1/finances/1` com token sem `finance.read` → `403 JSON`
 7. Keycloak: gerar token com scope `finance.read` e validar claim `scope` no JWT decodificado
 
 ---

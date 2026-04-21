@@ -6,7 +6,59 @@
       "clientId": "finance-client",
       "publicClient": false,
       "secret": "change-me",
-      "redirectUris": ["*"]
+      "redirectUris": ["*"],
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "optionalClientScopes": [
+        "finance.read",
+        "finance.write"
+      ]
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "finance.read",
+      "description": "Leitura de dados financeiros",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "finance.read",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "config": {
+            "claim.name": "scope",
+            "claim.value": "finance.read",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "userinfo.token.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "name": "finance.write",
+      "description": "Criação e atualização de dados financeiros",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "finance.write",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "config": {
+            "claim.name": "scope",
+            "claim.value": "finance.write",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "userinfo.token.claim": "false"
+          }
+        }
+      ]
     }
   ],
   "users": []

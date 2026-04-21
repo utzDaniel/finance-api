@@ -61,7 +61,7 @@ exit /b 0
 :testes
 echo.
 echo [TESTES]
-call mvn test
+call mvn clean test
 if %errorlevel% neq 0 (
     echo ERRO nos testes!
     pause
@@ -82,17 +82,15 @@ if not exist docs\openapi (
     mkdir docs\openapi
 )
 
-echo Gerando spec.json...
-curl http://localhost:8080/v3/api-docs -o docs\openapi\spec.json
-if %errorlevel% neq 0 (
-    echo ERRO ao gerar spec.json
-    echo Verifique se a API esta rodando!
+if not exist docs\openapi\spec.json (
+    echo ERRO: docs\openapi\spec.json nao encontrado!
+    echo O spec.json e a fonte da verdade e deve ser mantido manualmente.
     pause
     goto menu
 )
 
-echo Gerando spec.html com Redoc...
-call redoc-cli build docs\openapi\spec.json -o docs\openapi\spec.html
+echo Gerando spec.html com Redoc (CDN)...
+powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\generate-docs.ps1"
 if %errorlevel% neq 0 (
     echo ERRO ao gerar spec.html
     pause
