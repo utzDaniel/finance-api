@@ -115,7 +115,8 @@ A API DEVE validar:
 
 | Cenário | Resposta |
 |--------|---------|
-| Token ausente | 401 Não autorizado | | Token inválido | 401 Não autorizado |
+| Token ausente | 401 Não autorizado |
+ | Token inválido | 401 Não autorizado |
 | Token expirado | 401 Não autorizado |
 | Acesso negado | 403 Proibido |
 

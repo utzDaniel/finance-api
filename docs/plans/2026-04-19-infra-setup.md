@@ -1,6 +1,6 @@
 # Plano: Infra setup
 
-Status: in-progress
+Status: done
 
 Autor: Daniel
 

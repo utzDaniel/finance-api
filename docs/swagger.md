@@ -110,7 +110,19 @@ responses:
 Cada módulo deve ter sua própria etiqueta:
 
 - Finances
-- Payroll
+
+
+---
+
+## Contrato da API (spec.json)
+
+O arquivo `docs/openapi/spec.json` é a **especificação OpenAPI oficial** do projeto.
+
+- Ele deve ser mantido em sincronia com os endpoints implementados
+- Toda vez que um endpoint for criado, alterado ou removido, o `spec.json` deve ser atualizado
+- O arquivo é renderizado em `docs/openapi/spec.html` para visualização estática
+
+Localização: `docs/openapi/spec.json`
 
 ---
 

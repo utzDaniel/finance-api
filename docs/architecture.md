@@ -56,9 +56,31 @@ Utilitários comuns:
 
 ## Dependências externas
 
-- SQL Server
-- ActiveMQ
-- Keycloak
+| Serviço    | Função                                      | Porta padrão |
+|------------|---------------------------------------------|--------------|
+| SQL Server | Persistência dos dados financeiros          | 1433         |
+| ActiveMQ   | Broker de mensagens para eventos de domínio | 61616        |
+| Keycloak   | Provedor de identidade (IdP) — emite JWT    | 8081         |
+
+---
+
+### Diagrama de dependências
+
+      ┌──────────────────────────┐
+      │       Cliente HTTP       │
+      └────────────┬─────────────┘
+                   │ Bearer JWT
+                   ▼
+      ┌──────────────────────────┐
+      │       finance-api        │
+      │  (Resource Server OAuth2)│
+      └───┬──────────┬───────────┘
+          │          │          │
+     valida JWT   persiste   publica evento
+          │          │          │
+          ▼          ▼          ▼
+     Keycloak    SQL Server  ActiveMQ
+     :8081        :1433       :61616
 
 ---
 
