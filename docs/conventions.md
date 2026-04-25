@@ -1,95 +1,24 @@
 # Convenções
 
-## Regras de Arquitetura
+## Regras
 
-- Controllers devem ser enxutos
-- A lógica de negócios deve estar nos services
-- Repositories devem lidar apenas com persistência
-
----
-
-## Padrões
-
-- DTO para entrada/saída
-- Mapper para conversão
-- Enum para valores fixos
+- Controllers enxutos — lógica de negócio somente no Service
+- Repositories apenas persistência
+- Injeção de dependência via construtor
+- DTOs para entrada/saída; Mapper para conversão; Enum para valores fixos
+- Evitar valores nulos; usar nomes descritivos
 
 ---
 
-## Estilo de Código
+## Nomenclatura
 
-- Injeção de dependência no construtor
-- Evitar valores nulos
-- Usar nomes descritivos
-
----
-
-## API
-
-- Convenções REST
-- Códigos de status HTTP adequados
-
----
-
-## Convenções de nomenclatura
-
-### Controller
-
-Pattern:
-
-- `<Resource>Controller`
-
-Example:
-
-- FinancesController
-
----
-
-### Service
-
-Pattern:
-
-- `<Resource>Service`
-
-Example:
-
-- FinancesService
-
----
-
-### Repository
-
-Pattern:
-
-- `<Resource>Repository`
-
-Example:
-
-- FinancesRepository
-
----
-
-### Request Objects
-
-Pattern:
-
-- `<Resource><Action>Request`
-
-Examples:
-
-- FinancesCreateRequest
-- FinancesUpdateRequest
-
----
-
-### Response DTOs
-
-Pattern:
-
-- `<Resource><Action>Request`
-
-Examples:
-
-- FinancesCreatedDTO
-- FinancesUpdatedDTO
-- FinancesDTO (generic response)
+| Classe | Padrão | Exemplo |
+|--------|--------|---------|
+| Controller | `<Resource>Controller` | `FinancesController` |
+| Service | `<Resource>Service` | `FinancesService` |
+| Repository | `<Resource>Repository` | `FinancesRepository` |
+| Entity | `<Resource>Entity` | `Finance` |
+| Mapper | `<Resource>Mapper` | `FinancesMapper` |
+| EventPublisher | `<Resource>EventPublisher` | `FinancesEventPublisher` |
+| Request | `<Resource><Action>Request` | `FinancesCreateRequest`, `FinancesUpdateRequest` |
+| Response | `<Resource><Action>Response` | `FinancesCreatedResponse`, `FinancesResponse` |

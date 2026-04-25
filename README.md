@@ -1,39 +1,25 @@
-# API Financeira
+﻿# API Financeira
 
-## Descrição
-
-A API Financeira é um serviço RESTful para gestão financeira pessoal.
-
-Ela permite o acompanhamento de receitas, despesas, dados de folha de pagamento e publica eventos para integração com outros serviços.
-
----
+Serviço RESTful para gestão financeira pessoal — receitas, despesas, folha de pagamento e publicação de eventos para integração.
 
 ## Tecnologias
 
-- Java 21
-- Spring Boot
-- Maven
-- SQL Server
+- Java 21 / Spring Boot 4.0.5 / Maven
+- SQL Server + Flyway
 - ActiveMQ
-- Flyway
-- OAuth2 (Keycloak)
-- OpenAPI (SpringDoc)
-- Flyway
+- OAuth2 / JWT (Keycloak)
+- OpenAPI 3 (SpringDoc)
 
----
+## Comandos
 
-## Funcionalidades
+> Use `Comandos.bat` para acesso rápido pelo menu interativo.
 
-- Gerenciamento de registros financeiros:
-    - Receitas
-    - Despesas fixas
-    - Despesas variáveis
-- Registro de folha de pagamento
-- Cálculo do saldo mensal
-- Publicação de eventos para integração
-- API segura com OAuth2
-
----
+| Opção | Descrição | Comando |
+|-------|-----------|---------|
+| 1 | Build completo (build + testes + docs) | `Comandos.bat` → 1 |
+| 2 | Build sem testes | `mvn clean install -DskipTests` |
+| 3 | Rodar testes | `mvn clean test` |
+| 4 | Gerar documentação (`spec.html` via Redoc) | `Comandos.bat` → 4 |
 
 ## Documentação Técnica
 
@@ -45,44 +31,9 @@ Ela permite o acompanhamento de receitas, despesas, dados de folha de pagamento 
 - [Testes](docs/testing.md)
 - [Convenções](docs/conventions.md)
 
----
-
 ## Documentação da API
 
-A documentação da API é gerada a partir da especificação OpenAPI.
-
-### Referência Principal
-
-👉 [Documentação OpenAPI (HTML)](docs/openapi/spec.html)
-
----
-
-### Acesso Adicional
-
-- Swagger UI: `/swagger-ui/index.html` (público, sem autenticação)
+- [Referência OpenAPI (HTML)](docs/openapi/spec.html)
+- Swagger UI: `/swagger-ui/index.html` (público)
 - OpenAPI JSON: `/v3/api-docs`
-- Actuator Health: `/actuator/health` (público)
-- Actuator Info: `/actuator/info` (público)
-
----
-
-## Regras da Documentação
-
-- O arquivo `spec.html` é a principal fonte para exploração da API
-- Ele é gerado a partir do arquivo `spec.json`
-- Deve ser sempre atualizado após alterações na API
-
----
-
-## Gerar Documentação
-
-Use:
-
-```bash
-Comandos.bat
-```
-Option:
-
-4 - Gerar Documentacao
-
----
+- Actuator: `/actuator/health`, `/actuator/info` (públicos)
