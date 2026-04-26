@@ -20,7 +20,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_URL:http://localhost:8081}/realms/${KEYCLOAK_REALM:finance-dev}
+          issuer-uri: ${KEYCLOAK_URL:http://localhost:9999}/realms/${KEYCLOAK_REALM:development}
 
 springdoc:
   swagger-ui:

@@ -18,7 +18,7 @@ services:
       
   keycloak:
     image: keycloak/keycloak:26.6
-    command: ["start-dev","--http-port=8081","--import-realm"]
+    command: ["start-dev","--http-port=9999","--import-realm"]
     volumes:
       - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     environment:
@@ -26,7 +26,7 @@ services:
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
     ports:
-      - "8081:8081"
+      - "9999:9999"
 
   app:
     build: .
@@ -41,4 +41,5 @@ services:
       DB_USER: sa
       DB_PASSWORD: YourStrong!Passw0rd
       ACTIVEMQ_BROKER_URL: tcp://activemq:61616
-      KEYCLOAK_URL: http://keycloak:8081
+      KEYCLOAK_URL: http://keycloak:9999
+      KEYCLOAK_REALM: development

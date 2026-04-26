@@ -1,9 +1,17 @@
 {
-  "realm": "finance-dev",
+  "realm": "development",
   "enabled": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "FINANCE",
+        "description": "Permite acesso ao finance-mf (verificado pelo shell-app)"
+      }
+    ]
+  },
   "clients": [
     {
-      "clientId": "finance-client",
+      "clientId": "dev-client",
       "publicClient": false,
       "secret": "change-me",
       "redirectUris": ["*"],
