@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 class KeycloakHealthIndicatorTest {
 
-    private static final String ISSUER_URI = "http://localhost:8081/realms/finance-dev";
+    private static final String ISSUER_URI = "http://localhost:9999/realms/development";
 
     @Test
     @SuppressWarnings({"unchecked", "rawtypes"})

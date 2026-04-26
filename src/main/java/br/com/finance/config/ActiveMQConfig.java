@@ -1,13 +1,12 @@
 package br.com.finance.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+import org.springframework.jms.support.converter.JacksonJsonMessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
 @Configuration
@@ -24,11 +23,10 @@ public class ActiveMQConfig {
     }
 
     @Bean
-    public MappingJackson2MessageConverter jacksonJmsMessageConverter() {
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+    public JacksonJsonMessageConverter jacksonJmsMessageConverter() {
+        JacksonJsonMessageConverter converter = new JacksonJsonMessageConverter();
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
-        converter.setObjectMapper(new ObjectMapper());
         return converter;
     }
 
