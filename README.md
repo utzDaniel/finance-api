@@ -1,39 +1,53 @@
 ﻿# API Financeira
 
-Serviço RESTful para gestão financeira pessoal — receitas, despesas, folha de pagamento e publicação de eventos para integração.
+API REST de gestão financeira pessoal — receitas, despesas, folha de pagamento e publicação de eventos para integração.
 
-## Tecnologias
+## Stack
 
-- Java 21 / Spring Boot 4.0.5 / Maven
-- SQL Server + Flyway
-- ActiveMQ
-- OAuth2 / JWT (Keycloak)
-- OpenAPI 3 (SpringDoc)
+| Tecnologia | Versão |
+|---|---|
+| Java | 21 |
+| Spring Boot | 4.0.6 |
+| SQL Server | Banco de dados |
+| Flyway | Migrações SQL Server |
+| ActiveMQ | Eventos assíncronos |
+| Keycloak | Servidor de identidade (OAuth2/JWT) |
 
-## Comandos
+## Pré-requisitos
 
-> Use `Comandos.bat` para acesso rápido pelo menu interativo.
+Os serviços abaixo devem estar rodando **antes** de iniciar a aplicação:
 
-| Opção | Descrição | Comando |
-|-------|-----------|---------|
-| 1 | Build completo (build + testes + docs) | `Comandos.bat` → 1 |
-| 2 | Build sem testes | `mvn clean install -DskipTests` |
-| 3 | Rodar testes | `mvn clean test` |
-| 4 | Gerar documentação (`spec.html` via Redoc) | `Comandos.bat` → 4 |
+- **SQL Server** — `localhost:1433` (banco `ficance`)
+- **ActiveMQ** — `tcp://localhost:61616`
+- **Keycloak** — `http://localhost:9999` (realm `development`)
 
-## Documentação Técnica
+## Arquitetura
 
-- [Arquitetura](docs/architecture.md)
-- [API REST](docs/api.md)
-- [Eventos](docs/events.md)
-- [Segurança](docs/security.md)
-- [Swagger](docs/swagger.md)
-- [Testes](docs/testing.md)
-- [Convenções](docs/conventions.md)
+```
+src/main/java/br/com/finance/
+├── config/          # Segurança, Keycloak, tratamento de erros, ActiveMQ
+```
 
+**Eventos** são publicados após toda mutação (create/update/delete) na fila `events` do ActiveMQ.
+
+## Banco de dados
+
+Migrações gerenciadas pelo Flyway em `src/main/resources/db/migration/` (`V{n}__descricao.sql`).
+
+## Autenticação
+
+Todos os endpoints protegidos exigem um **Bearer Token JWT** obtido via Keycloak
+
+```
+Authorization: Bearer <token>
+```
+
+Roles aceitas: `FINANCE`, `ADMIN` (extraídas de `realm_access.roles` no JWT).
+
+Endpoints públicos: `/actuator/health`, `/actuator/info`, `/api/v1/public/**`.
+
+---
 ## Documentação da API
 
-- [Referência OpenAPI (HTML)](docs/openapi/spec.html)
-- Swagger UI: `/swagger-ui/index.html` (público)
-- OpenAPI JSON: `/v3/api-docs`
-- Actuator: `/actuator/health`, `/actuator/info` (públicos)
+A especificação OpenAPI completa está em [docs/openapi/spec.html](docs/openapi/spec.html).
+

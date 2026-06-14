@@ -8,6 +8,6 @@ services:
       DB_URL: jdbc:sqlserver://sqlserver:1433;databaseName=finance;encrypt=true;trustServerCertificate=true
       DB_USER: sa
       DB_PASSWORD: YourStrong!Passw0rd
-      ACTIVEMQ_BROKER_URL: tcp://activemq:61616
-      KEYCLOAK_URL: http://keycloak:9999
+      ACTIVEMQ_URL: tcp://host.docker.internal:61616
+      KEYCLOAK_URL: http://host.docker.internal:9999
       KEYCLOAK_REALM: development

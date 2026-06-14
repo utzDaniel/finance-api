@@ -1,7 +1,17 @@
 server:
   port: 8082
+  error:
+    include-message: always
+    include-binding-errors: always
 
 spring:
+  application:
+    name: ficance-api
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
   datasource:
     url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=finance;encrypt=true;trustServerCertificate=true}
     username: ${DB_USER:sa}
@@ -14,19 +24,14 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
   activemq:
-    broker-url: ${ACTIVEMQ_BROKER_URL:tcp://localhost:61616}
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${KEYCLOAK_URL:http://localhost:9999}/realms/${KEYCLOAK_REALM:development}
+    broker-url: ${ACTIVEMQ_URL:tcp://localhost:61616}
 
-springdoc:
-  swagger-ui:
-    path: /swagger-ui/index.html
-  api-docs:
-    path: /v3/api-docs
+keycloak:
+  url: ${KEYCLOAK_URL:http://localhost:9999}
+  realm: ${KEYCLOAK_REALM:development}
 
 management:
   endpoints:
@@ -45,3 +50,4 @@ management:
       enabled: false
     ssl:
       enabled: false
+

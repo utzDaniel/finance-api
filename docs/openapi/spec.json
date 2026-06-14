@@ -1,1 +1,188 @@
-{"openapi":"3.0.1","info":{"title":"API Financeira","description":"API para gestão de lançamentos financeiros","version":"1.0.0"},"servers":[{"url":"http://localhost:8080","description":"Local"}],"security":[{"bearerAuth":[]}],"paths":{},"components":{"securitySchemes":{"bearerAuth":{"type":"http","description":"Token JWT obtido via Keycloak","scheme":"bearer","bearerFormat":"JWT"}}}}
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API Financeira",
+    "version": "1.0.0",
+    "description": "API de gestão financeiros, orientada a eventos."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8082",
+      "description": "Local"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+  ],
+  "paths": {
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token JWT obtido via Keycloak."
+      }
+    },
+    "parameters": {
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Falha na autenticação. Token ausente, inválido ou expirado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "status": 401,
+              "error": "Não autorizado",
+              "message": "Falha na autenticação. Token ausente, inválido ou expirado",
+              "timestamp": "2026-05-03T19:00:00.000Z",
+              "path": "/api/v1/ficance"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Acesso negado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "status": 403,
+              "error": "Acesso negado",
+              "message": "Você não tem permissão para acessar este recurso",
+              "timestamp": "2026-05-03T19:00:00.000Z",
+              "path": "/api/v1/ficance"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Erro interno do servidor",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "timestamp": "2026-05-03T19:00:00.000Z",
+              "status": 500,
+              "error": "Erro interno do servidor",
+              "message": "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde",
+              "path": "/api/v1/ficance"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Não Encontrado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "status": 404,
+              "error": "Não Encontrado",
+              "message": "Objeto não encontrado",
+              "timestamp": "2026-05-03T19:00:00.000Z",
+              "path": "/api/v1/ficance"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data e hora do erro em UTC",
+            "example": "2026-05-03T19:00:00.000Z"
+          },
+          "status": {
+            "type": "integer",
+            "description": "Código HTTP do erro",
+            "example": 400
+          },
+          "error": {
+            "type": "string",
+            "description": "Descrição resumida do erro HTTP",
+            "example": "Bad Request"
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensagem detalhada do erro",
+            "example": "Mensagem de erro"
+          },
+          "path": {
+            "type": "string",
+            "description": "Caminho do endpoint que gerou o erro",
+            "example": "/api/v1/finance"
+          }
+        }
+      },
+      "ErrorViolacaoResponse": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data e hora do erro em UTC"
+          },
+          "status": {
+            "type": "integer",
+            "description": "Código HTTP do erro",
+            "example": 400
+          },
+          "error": {
+            "type": "string",
+            "description": "Descrição resumida do erro HTTP",
+            "example": "Bad Request"
+          },
+          "violacoes": {
+            "type": "array",
+            "description": "Lista de violações de regras de negócio que causaram o erro",
+            "items": {
+              "$ref": "#/components/schemas/ViolacaoResponse"
+            }
+          },
+          "path": {
+            "type": "string",
+            "description": "Caminho do endpoint que gerou o erro",
+            "example": "/api/v1/ficance"
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensagem detalhada do erro",
+            "example": "Mensagem de erro"
+          }
+        }
+      },
+      "ViolacaoResponse": {
+        "type": "object",
+        "properties": {
+          "campo": {
+            "type": "string",
+            "description": "Campo que violou a regra de negócio"
+          },
+          "razao": {
+            "type": "string",
+            "description": "Razão da violação de regra de negócio"
+          }
+        }
+      }
+    }
+  }
+}
