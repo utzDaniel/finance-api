@@ -1,6 +1,6 @@
 # Plano: Security, Swagger, ActiveMQ e Actuator
 
-Status: completed
+Status: done
 
 Autor: Daniel
 

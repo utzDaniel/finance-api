@@ -1,6 +1,9 @@
 package br.com.finance.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -130,6 +133,34 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    @DisplayName("handleConstraintViolationException - deve retornar resposta com violações de path")
+    void handleConstraintViolationException() {
+        // Arrange
+        ConstraintPayload payload = new ConstraintPayload("");
+        var validator = Validation.buildDefaultValidatorFactory().getValidator();
+        var constraintViolations = validator.validate(payload);
+        ConstraintViolationException ex = new ConstraintViolationException(constraintViolations);
+
+        // Act
+        ResponseEntity<Map<String, Object>> response = handler.handleConstraintViolationException(ex, request);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(400, response.getBody().get("status"));
+        assertEquals("Path inválido.", response.getBody().get("error"));
+        assertTrue(response.getBody().containsKey("violacoes"));
+        assertEquals("/api/v1/test", response.getBody().get("path"));
+        assertNotNull(response.getBody().get("timestamp"));
+
+        @SuppressWarnings("unchecked")
+        List<Violacao> violacoes = (List<Violacao>) response.getBody().get("violacoes");
+        assertEquals(1, violacoes.size());
+        assertEquals("name", violacoes.getFirst().campo());
+        assertEquals("Nome é obrigatório", violacoes.getFirst().razao());
+    }
+
+    @Test
     @DisplayName("handleMediaTypeNotSupported - deve retornar resposta de tipo de mídia não suportado")
     void handleMediaTypeNotSupported() {
         // Act
@@ -202,5 +233,10 @@ class GlobalExceptionHandlerTest {
         assertNotNull(response.getBody().get("timestamp"));
     }
 
-}
+    private record ConstraintPayload(
+            @NotBlank(message = "Nome é obrigatório")
+            String name
+    ) {
+    }
 
+}

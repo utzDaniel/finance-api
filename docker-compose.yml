@@ -11,3 +11,4 @@ services:
       ACTIVEMQ_URL: tcp://host.docker.internal:61616
       KEYCLOAK_URL: http://host.docker.internal:9999
       KEYCLOAK_REALM: development
+      KEYCLOAK_DB_URL: jdbc:sqlserver://sqlserver:1433;databaseName=keycloak;encrypt=true;trustServerCertificate=true

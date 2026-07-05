@@ -21,8 +21,14 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: false
+    properties:
+      hibernate:
+        default_schema: dbo
   flyway:
     enabled: true
+    url: ${DB_URL:jdbc:sqlserver://localhost:1433;databaseName=finance;encrypt=true;trustServerCertificate=true}
+    user: ${DB_USER:sa}
+    password: ${DB_PASSWORD:YourStrong!Passw0rd}
     locations: classpath:db/migration
     baseline-on-migrate: true
     baseline-version: 0
@@ -32,6 +38,11 @@ spring:
 keycloak:
   url: ${KEYCLOAK_URL:http://localhost:9999}
   realm: ${KEYCLOAK_REALM:development}
+  datasource:
+    url: ${KEYCLOAK_DB_URL:jdbc:sqlserver://localhost:1433;databaseName=keycloak;encrypt=true;trustServerCertificate=true}
+    username: ${DB_USER:sa}
+    password: ${DB_PASSWORD:YourStrong!Passw0rd}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 management:
   endpoints:
@@ -50,4 +61,3 @@ management:
       enabled: false
     ssl:
       enabled: false
-

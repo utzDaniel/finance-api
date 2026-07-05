@@ -3,6 +3,7 @@ package br.com.finance.config;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -65,6 +66,14 @@ class TimestampUtilsTest {
             assertTrue(cause instanceof UnsupportedOperationException);
             assertEquals("Classe utilitária não pode ser instanciada", cause.getMessage());
         }
+    }
+
+    @Test
+    @DisplayName("Deve fazer parse de competência yyyy-MM-dd para primeiro dia do mês")
+    void deveFazerParseDeCompetencia() {
+        LocalDate parsed = TimestampUtils.parseCompetenceDate("2026-06-02");
+
+        assertEquals(LocalDate.of(2026, 6, 1), parsed);
     }
 }
 

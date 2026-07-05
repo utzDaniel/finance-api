@@ -12,3 +12,8 @@ spring:
 keycloak:
   url: http://mock-keycloak
   realm: development
+  datasource:
+    url: jdbc:h2:mem:keycloakdb;DB_CLOSE_DELAY=-1;MODE=MSSQLServer
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver

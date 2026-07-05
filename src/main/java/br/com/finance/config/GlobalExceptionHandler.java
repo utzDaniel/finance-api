@@ -1,6 +1,7 @@
 package br.com.finance.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,24 @@ public class GlobalExceptionHandler {
 
         var violacoes = ex.getBindingResult()
                 .getFieldErrors()
+                .stream()
+                .map(Violacao::new)
+                .collect(Collectors.toList());
+
+        body.put("violacoes", violacoes);
+        body.put("path", request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleConstraintViolationException(ConstraintViolationException ex,
+                                                                                  HttpServletRequest request) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", TimestampUtils.now());
+        body.put("status", HttpStatus.BAD_REQUEST.value());
+        body.put("error", "Path inválido.");
+
+        var violacoes = ex.getConstraintViolations()
                 .stream()
                 .map(Violacao::new)
                 .collect(Collectors.toList());

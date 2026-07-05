@@ -1,5 +1,7 @@
 package br.com.finance.config;
 
+import jakarta.validation.Validation;
+import jakarta.validation.constraints.NotBlank;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.FieldError;
@@ -36,6 +38,22 @@ class ViolacaoTest {
         // Assert
         assertEquals("email", violacao.campo());
         assertEquals("Email inválido", violacao.razao());
+    }
+
+    @Test
+    @DisplayName("Deve criar uma Violacao a partir de ConstraintViolation")
+    void deveCriarViolacaoAPartirDeConstraintViolation() {
+        // Arrange
+        ConstraintPayload payload = new ConstraintPayload("");
+        var validator = Validation.buildDefaultValidatorFactory().getValidator();
+        var violation = validator.validate(payload).iterator().next();
+
+        // Act
+        Violacao violacao = new Violacao(violation);
+
+        // Assert
+        assertEquals("name", violacao.campo());
+        assertEquals("Nome é obrigatório", violacao.razao());
     }
 
     @Test
@@ -86,5 +104,10 @@ class ViolacaoTest {
         assertTrue(toString.contains("campo"));
         assertTrue(toString.contains("razao"));
     }
-}
 
+    private record ConstraintPayload(
+            @NotBlank(message = "Nome é obrigatório")
+            String name
+    ) {
+    }
+}
