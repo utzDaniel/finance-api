@@ -16,7 +16,7 @@ CREATE TABLE salary_detail_item (
     code INT NOT NULL,
     name VARCHAR(50) NOT NULL,
     CONSTRAINT pk_salary_detail_item PRIMARY KEY (id),
-    CONSTRAINT uq_salary_detail_item_code UNIQUE (code)
+    CONSTRAINT uq_salary_detail_item_code_name UNIQUE (code, name)
 );
 
 INSERT INTO salary_detail_item (code, name)
@@ -46,12 +46,8 @@ CREATE TABLE salary_detail (
 );
 
 CREATE INDEX idx_salary_detail_user_competence ON salary_detail (user_id, competence_date);
-CREATE INDEX idx_salary_detail_type            ON salary_detail (salary_item_type_id);
-CREATE INDEX idx_salary_detail_item            ON salary_detail (salary_item_id);
-CONSTRAINT uq_salary_detail
-UNIQUE (
-    user_id,
-    competence_date,
-    salary_item_type_id,
-    salary_item_id
-)
+CREATE INDEX idx_salary_detail_type            ON salary_detail (item_type_id);
+CREATE INDEX idx_salary_detail_item            ON salary_detail (item_id);
+
+ALTER TABLE salary_detail
+    ADD CONSTRAINT uq_salary_detail UNIQUE (user_id, competence_date, item_type_id, item_id);

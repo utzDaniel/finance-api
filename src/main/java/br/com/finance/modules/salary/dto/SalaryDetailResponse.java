@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public record SalaryDetailResponse(
+        Long id,
         int idType,
         int code,
         String name,

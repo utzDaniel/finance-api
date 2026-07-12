@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -33,7 +34,7 @@ class SecurityConfigTest {
     @Autowired
     private SecurityFilterChain securityFilterChain;
 
-    @Autowired
+    @MockitoBean
     private JwtDecoder jwtDecoder;
 
     private MockMvc mockMvc;

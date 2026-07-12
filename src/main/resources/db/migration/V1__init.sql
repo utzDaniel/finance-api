@@ -13,5 +13,4 @@ CREATE TABLE salary (
 	CONSTRAINT ck_salary_net_salary CHECK (net_salary >= 0)
 );
 
-CREATE INDEX idx_salary_user_id ON salary (user_id);
-CREATE INDEX idx_salary_competence_date ON salary (competence_date);
+CREATE INDEX idx_salary_user_competence ON salary (user_id, competence_date);

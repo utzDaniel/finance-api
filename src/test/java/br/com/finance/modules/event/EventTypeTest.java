@@ -15,8 +15,11 @@ class EventTypeTest {
     void deveConterTodosTiposDeEventos() {
         EventType[] tipos = EventType.values();
 
-        assertEquals(1, tipos.length, "Deve haver exatamente 1 tipos de eventos");
+        assertEquals(4, tipos.length, "Deve haver exatamente 4 tipos de eventos");
         assertNotNull(EventType.valueOf("SALARY_SUMMARY_UPDATED"));
+        assertNotNull(EventType.valueOf("SALARY_DETAIL_ADDED"));
+        assertNotNull(EventType.valueOf("SALARY_DETAIL_UPDATED"));
+        assertNotNull(EventType.valueOf("SALARY_DETAIL_DELETED"));
     }
 
     @Test

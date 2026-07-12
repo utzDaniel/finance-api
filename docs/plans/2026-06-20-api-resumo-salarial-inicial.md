@@ -1,8 +1,8 @@
 # Plano: Primeira Entrega da API para Tela Inicial de Financas (finance-api)
 
-Status: partially-implemented
+Status: done
 
-Autor: Copilot
+Autor: Daniel
 
 Data: 2026-07-05
 

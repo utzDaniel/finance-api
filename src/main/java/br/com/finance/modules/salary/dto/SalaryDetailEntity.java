@@ -29,11 +29,13 @@ public class SalaryDetailEntity {
     @Column(name = "competence_date", nullable = false, columnDefinition = "DATETIME2")
     private LocalDate competenceDate;
 
-    @Column(name = "item_id", nullable = false)
-    private int itemId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_type_id", nullable = false)
+    private SalaryDetailItemTypeEntity itemType;
 
-    @Column(name = "item_type_id", nullable = false)
-    private int itemTypeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
+    private SalaryDetailItemEntity item;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;

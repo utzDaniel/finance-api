@@ -1,10 +1,9 @@
 package br.com.finance.modules.summary;
 
 import br.com.finance.config.ApiException;
-import br.com.finance.config.KeycloakConfig;
 import br.com.finance.modules.event.EventPublisher;
 import br.com.finance.modules.event.EventType;
-import br.com.finance.modules.keycloak.KeycloakReadRepository;
+import br.com.finance.modules.keycloak.KeycloakService;
 import br.com.finance.modules.keycloak.dto.KeycloakUserFamilyRecord;
 import br.com.finance.modules.summary.dto.MonthlySummaryResponse;
 import br.com.finance.modules.summary.dto.SalaryEntity;
@@ -44,10 +43,7 @@ class SummaryServiceTest {
     private SalaryRepository salaryRepository;
 
     @Mock
-    private KeycloakReadRepository keycloakReadRepository;
-
-    @Mock
-    private KeycloakConfig keycloakConfig;
+    private KeycloakService keycloakService;
 
     @Mock
     private EventPublisher eventPublisher;
@@ -61,9 +57,8 @@ class SummaryServiceTest {
         Jwt jwt = buildJwt("john.doe");
         LocalDate competenceDate = LocalDate.of(2026, 6, 1);
 
-        when(keycloakConfig.getRealm()).thenReturn("finance");
-        when(keycloakReadRepository.findUserFamilyByRealmAndUsername("finance", "john.doe"))
-                .thenReturn(Optional.empty());
+        when(keycloakService.getUserFamily(jwt))
+                .thenThrow(ApiException.notFound("User não encontrado"));
 
         ApiException exception = assertThrows(ApiException.class, () -> salaryService.getMonthlySummary(jwt, competenceDate));
 
@@ -85,9 +80,7 @@ class SummaryServiceTest {
         salaryEntity.setGrossSalary(new BigDecimal("1234.5"));
         salaryEntity.setNetSalary(new BigDecimal("987.1"));
 
-        when(keycloakConfig.getRealm()).thenReturn("finance");
-        when(keycloakReadRepository.findUserFamilyByRealmAndUsername("finance", "john.doe"))
-                .thenReturn(Optional.of(userFamily));
+        when(keycloakService.getUserFamily(jwt)).thenReturn(userFamily);
         when(salaryRepository.findByUserIdAndCompetenceDate("u-1", competenceDate))
                 .thenReturn(Optional.of(salaryEntity));
 
@@ -99,7 +92,7 @@ class SummaryServiceTest {
         assertEquals(new BigDecimal("987.10"), response.userNetSalary());
         assertEquals(new BigDecimal("0.00"), response.familyGrossSalary());
         assertEquals(new BigDecimal("0.00"), response.familyNetSalary());
-        verify(keycloakReadRepository, never()).findUserIdsByFamilyId(anyLong());
+        verify(keycloakService, never()).getFamilyUserIds(anyLong());
     }
 
     @Test
@@ -119,12 +112,10 @@ class SummaryServiceTest {
         when(sumSalaryDto.getGrossSalary()).thenReturn(new BigDecimal("5000.567"));
         when(sumSalaryDto.getNetSalary()).thenReturn(new BigDecimal("4200.123"));
 
-        when(keycloakConfig.getRealm()).thenReturn("finance");
-        when(keycloakReadRepository.findUserFamilyByRealmAndUsername("finance", "john.doe"))
-                .thenReturn(Optional.of(userFamily));
+        when(keycloakService.getUserFamily(jwt)).thenReturn(userFamily);
         when(salaryRepository.findByUserIdAndCompetenceDate("u-1", competenceDate))
                 .thenReturn(Optional.of(salaryEntity));
-        when(keycloakReadRepository.findUserIdsByFamilyId(99L)).thenReturn(List.of("u-1", "u-2"));
+        when(keycloakService.getFamilyUserIds(99L)).thenReturn(List.of("u-1", "u-2"));
         when(salaryRepository.sumSalaryByUserIdInAndCompetenceDate(List.of("u-1", "u-2"), competenceDate))
                 .thenReturn(sumSalaryDto);
 
@@ -153,7 +144,7 @@ class SummaryServiceTest {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertTrue(exception.hasViolacoes());
         assertEquals(2, exception.getViolacoes().size());
-        verifyNoInteractions(salaryRepository, keycloakReadRepository, keycloakConfig, eventPublisher);
+        verifyNoInteractions(salaryRepository, keycloakService, eventPublisher);
     }
 
     @Test
@@ -171,13 +162,11 @@ class SummaryServiceTest {
         when(sumSalaryDto.getGrossSalary()).thenReturn(new BigDecimal("5000.00"));
         when(sumSalaryDto.getNetSalary()).thenReturn(new BigDecimal("4000.00"));
 
-        when(keycloakConfig.getRealm()).thenReturn("finance");
-        when(keycloakReadRepository.findUserFamilyByRealmAndUsername("finance", "john.doe"))
-                .thenReturn(Optional.of(userFamily));
+        when(keycloakService.getUserFamily(jwt)).thenReturn(userFamily);
         when(salaryRepository.findByUserIdAndCompetenceDate("u-1", competenceDate))
                 .thenReturn(Optional.empty());
         when(salaryRepository.save(any(SalaryEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(keycloakReadRepository.findUserIdsByFamilyId(99L)).thenReturn(List.of("u-1", "u-2"));
+        when(keycloakService.getFamilyUserIds(99L)).thenReturn(List.of("u-1", "u-2"));
         when(salaryRepository.sumSalaryByUserIdInAndCompetenceDate(List.of("u-1", "u-2"), competenceDate))
                 .thenReturn(sumSalaryDto);
 

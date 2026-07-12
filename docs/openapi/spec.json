@@ -20,9 +20,143 @@
     {
       "name": "Summary",
       "description": "Resumo financeiro do mês"
+    },
+    {
+      "name": "Salary",
+      "description": "Detalhamento salarial por competência"
     }
   ],
   "paths": {
+    "/api/v1/finance/salary/{competenceDate}/detail": {
+      "get": {
+        "tags": ["Salary"],
+        "summary": "Listar detalhes salariais paginados",
+        "operationId": "getSalaryDetail",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/CompetenceDate" },
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Size" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de detalhes salariais",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SalaryDetailPageResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      },
+      "post": {
+        "tags": ["Salary"],
+        "summary": "Adicionar detalhe salarial",
+        "operationId": "addSalaryDetail",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/CompetenceDate" },
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Size" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AddSalaryDetailRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Detalhe adicionado. Retorna lista paginada atualizada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SalaryDetailPageResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      },
+      "put": {
+        "tags": ["Salary"],
+        "summary": "Editar detalhe salarial",
+        "operationId": "updateSalaryDetail",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/CompetenceDate" },
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Size" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateSalaryDetailRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Detalhe atualizado. Retorna lista paginada atualizada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SalaryDetailPageResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      },
+      "delete": {
+        "tags": ["Salary"],
+        "summary": "Deletar um ou mais detalhes salariais",
+        "operationId": "deleteSalaryDetail",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/CompetenceDate" },
+          { "$ref": "#/components/parameters/Page" },
+          { "$ref": "#/components/parameters/Size" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DeleteSalaryDetailRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Detalhes deletados. Retorna lista paginada atualizada",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SalaryDetailPageResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
     "/api/v1/finance/summary/{competenceDate}": {
       "get": {
         "tags": [
@@ -144,6 +278,20 @@
           "format": "date",
           "example": "2026-06-01"
         }
+      },
+      "Page": {
+        "name": "page",
+        "in": "query",
+        "required": false,
+        "description": "Número da página (0-based)",
+        "schema": { "type": "integer", "default": 0, "example": 0 }
+      },
+      "Size": {
+        "name": "size",
+        "in": "query",
+        "required": false,
+        "description": "Quantidade de itens por página",
+        "schema": { "type": "integer", "default": 10, "example": 10 }
       }
     },
     "responses": {
@@ -244,6 +392,66 @@
       }
     },
     "schemas": {
+      "SalaryDetailResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64", "description": "ID do detalhe salarial", "example": 1 },
+          "idType": { "type": "integer", "description": "ID do tipo de item (1=Desconto, 2=Provento, 3=Benefício)", "example": 1 },
+          "code": { "type": "integer", "description": "Código do item", "example": 1001 },
+          "name": { "type": "string", "description": "Nome do item", "example": "INSS" },
+          "quantity": { "type": "integer", "description": "Quantidade", "example": 1 },
+          "amount": { "type": "number", "format": "decimal", "description": "Valor monetário", "example": 150.00 }
+        }
+      },
+      "SalaryDetailPageResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SalaryDetailResponse" }
+          },
+          "totalElements": { "type": "integer", "format": "int64", "example": 3 },
+          "totalPages": { "type": "integer", "example": 1 },
+          "size": { "type": "integer", "example": 10 },
+          "number": { "type": "integer", "example": 0 }
+        }
+      },
+      "AddSalaryDetailRequest": {
+        "type": "object",
+        "required": ["idType", "code", "name", "quantity", "amount"],
+        "properties": {
+          "idType": { "type": "integer", "description": "ID do tipo (1=Desconto, 2=Provento, 3=Benefício)", "example": 1 },
+          "code": { "type": "integer", "minimum": 1, "description": "Código único do item", "example": 1001 },
+          "name": { "type": "string", "maxLength": 50, "description": "Nome do item", "example": "INSS" },
+          "quantity": { "type": "integer", "minimum": 1, "description": "Quantidade", "example": 1 },
+          "amount": { "type": "number", "format": "decimal", "minimum": 1, "description": "Valor monetário", "example": 150.00 }
+        }
+      },
+      "UpdateSalaryDetailRequest": {
+        "type": "object",
+        "required": ["id", "idType", "code", "name", "quantity", "amount"],
+        "properties": {
+          "id": { "type": "integer", "format": "int64", "description": "ID do detalhe a editar", "example": 1 },
+          "idType": { "type": "integer", "description": "ID do tipo (1=Desconto, 2=Provento, 3=Benefício)", "example": 1 },
+          "code": { "type": "integer", "minimum": 1, "description": "Código único do item", "example": 1001 },
+          "name": { "type": "string", "maxLength": 50, "description": "Nome do item", "example": "INSS" },
+          "quantity": { "type": "integer", "minimum": 1, "description": "Quantidade", "example": 1 },
+          "amount": { "type": "number", "format": "decimal", "minimum": 1, "description": "Valor monetário", "example": 150.00 }
+        }
+      },
+      "DeleteSalaryDetailRequest": {
+        "type": "object",
+        "required": ["ids"],
+        "properties": {
+          "ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "integer", "format": "int64" },
+            "description": "Lista de IDs de salary_detail a deletar",
+            "example": [1, 2]
+          }
+        }
+      },
       "MonthlySummaryResponse": {
         "type": "object",
         "properties": {
