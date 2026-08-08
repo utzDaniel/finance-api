@@ -1,15 +1,16 @@
 package br.com.finance.modules.summary;
 
 import br.com.finance.config.TimestampUtils;
-import br.com.finance.modules.summary.dto.MonthlySummaryResponse;
-import br.com.finance.modules.summary.dto.UpdateMonthlySummaryRequest;
-import jakarta.validation.Valid;
+import br.com.finance.modules.summary.dto.SummaryResponse;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
@@ -18,32 +19,17 @@ public class SummaryController {
 
     private final SummaryService summaryService;
 
-    public SummaryController(SummaryService salaryService) {
-        this.summaryService = salaryService;
+    public SummaryController(SummaryService summaryService) {
+        this.summaryService = summaryService;
     }
 
-    @GetMapping("/summary/{competenceDate}")
-    public ResponseEntity<MonthlySummaryResponse> getMonthlySalarySummary(
+    @GetMapping("/summary/{competence}")
+    public ResponseEntity<SummaryResponse> getSummary(
             @AuthenticationPrincipal Jwt jwt,
-            @PathVariable("competenceDate")
-            @Pattern(regexp = TimestampUtils.COMPETENCE_DATE_REGEX, message = "CompetenceDate deve estar no formato yyyy-MM-dd")
-            String competenceDate
+            @PathVariable("competence")
+            @Pattern(regexp = TimestampUtils.DATA_REGEX, message = "Competence deve estar no formato yyyy-MM-dd")
+            String competence
     ) {
-        return ResponseEntity.ok(summaryService.getMonthlySummary(jwt, TimestampUtils.parseCompetenceDate(competenceDate)));
-    }
-
-    @PutMapping("/summary/{competenceDate}")
-    public ResponseEntity<MonthlySummaryResponse> updateMonthlySalarySummary(
-            @AuthenticationPrincipal Jwt jwt,
-            @PathVariable("competenceDate")
-            @Pattern(regexp = TimestampUtils.COMPETENCE_DATE_REGEX, message = "CompetenceDate deve estar no formato yyyy-MM-dd")
-            String competenceDate,
-            @Valid @RequestBody UpdateMonthlySummaryRequest request
-    ) {
-        return ResponseEntity.ok(summaryService.updateMonthlySummary(
-                jwt,
-                TimestampUtils.parseCompetenceDate(competenceDate),
-                request
-        ));
+        return ResponseEntity.ok(summaryService.getSummary(jwt, TimestampUtils.parseCompetence(competence)));
     }
 }

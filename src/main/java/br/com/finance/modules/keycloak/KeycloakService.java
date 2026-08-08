@@ -2,7 +2,6 @@ package br.com.finance.modules.keycloak;
 
 import br.com.finance.config.ApiException;
 import br.com.finance.config.KeycloakConfig;
-import br.com.finance.modules.keycloak.dto.KeycloakUserFamilyRecord;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +18,16 @@ public class KeycloakService {
         this.keycloakConfig = keycloakConfig;
     }
 
-    public KeycloakUserFamilyRecord getUserFamily(Jwt jwt) {
+    public String getIdUser(Jwt jwt) {
         String username = jwt.getClaimAsString("preferred_username");
         return keycloakReadRepository
-                .findUserFamilyByRealmAndUsername(keycloakConfig.getRealm(), username)
+                .findUserId(keycloakConfig.getRealm(), username)
                 .orElseThrow(() -> ApiException.notFound("User não encontrado"));
     }
 
-    public List<String> getFamilyUserIds(Long familyId) {
-        return keycloakReadRepository.findUserIdsByFamilyId(familyId);
+    public List<String> getIdUsers(Jwt jwt) {
+        String username = jwt.getClaimAsString("preferred_username");
+        return keycloakReadRepository.findUsersId(keycloakConfig.getRealm(), username);
     }
+
 }

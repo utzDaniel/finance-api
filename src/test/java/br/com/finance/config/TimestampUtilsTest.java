@@ -71,7 +71,7 @@ class TimestampUtilsTest {
     @Test
     @DisplayName("Deve fazer parse de competência yyyy-MM-dd para primeiro dia do mês")
     void deveFazerParseDeCompetencia() {
-        LocalDate parsed = TimestampUtils.parseCompetenceDate("2026-06-02");
+        LocalDate parsed = TimestampUtils.parseCompetence("2026-06-02");
 
         assertEquals(LocalDate.of(2026, 6, 1), parsed);
     }

@@ -1,5 +1,6 @@
 package br.com.finance.modules.event;
 
+import br.com.finance.modules.event.dto.EventType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,13 +32,13 @@ class EventPublisherTest {
     void publishDeveEnviarEventoParaFilaComPayloadPadronizado() {
         Map<String, Object> payload = Map.of("competenceDate", "2026-06-01");
 
-        eventPublisher.publish(EventType.SALARY_SUMMARY_UPDATED, "user-123", payload);
+        eventPublisher.publish(EventType.PAYROLL_ADDED, "user-123", payload);
 
         ArgumentCaptor<Map<String, Object>> eventCaptor = ArgumentCaptor.forClass(Map.class);
         verify(jmsTemplate).convertAndSend(eq("events"), eventCaptor.capture());
 
         Map<String, Object> event = eventCaptor.getValue();
-        assertEquals("SALARY_SUMMARY_UPDATED", event.get("type"));
+        assertEquals("PAYROLL_ADDED", event.get("type"));
         assertEquals("user-123", event.get("userId"));
         assertEquals(payload, event.get("payload"));
         assertNotNull(event.get("timestamp"));

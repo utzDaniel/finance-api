@@ -1,5 +1,6 @@
 package br.com.finance.modules.event;
 
+import br.com.finance.modules.event.dto.EventType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +16,18 @@ class EventTypeTest {
     void deveConterTodosTiposDeEventos() {
         EventType[] tipos = EventType.values();
 
-        assertEquals(4, tipos.length, "Deve haver exatamente 4 tipos de eventos");
+        assertEquals(10, tipos.length, "Deve haver exatamente 10 tipos de eventos");
         assertNotNull(EventType.valueOf("SALARY_SUMMARY_UPDATED"));
         assertNotNull(EventType.valueOf("SALARY_DETAIL_ADDED"));
         assertNotNull(EventType.valueOf("SALARY_DETAIL_UPDATED"));
         assertNotNull(EventType.valueOf("SALARY_DETAIL_DELETED"));
+        assertNotNull(EventType.valueOf("EXPENSE_ADDED"));
+        assertNotNull(EventType.valueOf("EXPENSE_UPDATED"));
+        assertNotNull(EventType.valueOf("EXPENSE_DELETED"));
+        assertNotNull(EventType.valueOf("PAYMENT_ADDED"));
+        assertNotNull(EventType.valueOf("PAYMENT_UPDATED"));
+        assertNotNull(EventType.valueOf("PAYMENT_DELETED"));
+
     }
 
     @Test

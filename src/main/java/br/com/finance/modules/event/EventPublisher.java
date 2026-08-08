@@ -1,6 +1,7 @@
 package br.com.finance.modules.event;
 
 import br.com.finance.config.TimestampUtils;
+import br.com.finance.modules.event.dto.EventType;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
