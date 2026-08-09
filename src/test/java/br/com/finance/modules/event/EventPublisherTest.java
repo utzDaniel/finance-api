@@ -32,13 +32,13 @@ class EventPublisherTest {
     void publishDeveEnviarEventoParaFilaComPayloadPadronizado() {
         Map<String, Object> payload = Map.of("competenceDate", "2026-06-01");
 
-        eventPublisher.publish(EventType.PAYROLL_ADDED, "user-123", payload);
+        eventPublisher.publish(EventType.PAYROLL, "user-123", payload);
 
         ArgumentCaptor<Map<String, Object>> eventCaptor = ArgumentCaptor.forClass(Map.class);
         verify(jmsTemplate).convertAndSend(eq("events"), eventCaptor.capture());
 
         Map<String, Object> event = eventCaptor.getValue();
-        assertEquals("PAYROLL_ADDED", event.get("type"));
+        assertEquals("PAYROLL", event.get("type"));
         assertEquals("user-123", event.get("userId"));
         assertEquals(payload, event.get("payload"));
         assertNotNull(event.get("timestamp"));

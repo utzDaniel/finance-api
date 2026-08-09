@@ -5,8 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("EventType - Testes do enum de tipos de eventos")
 class EventTypeTest {
@@ -16,18 +14,12 @@ class EventTypeTest {
     void deveConterTodosTiposDeEventos() {
         EventType[] tipos = EventType.values();
 
-        assertEquals(10, tipos.length, "Deve haver exatamente 10 tipos de eventos");
-        assertNotNull(EventType.valueOf("SALARY_SUMMARY_UPDATED"));
-        assertNotNull(EventType.valueOf("SALARY_DETAIL_ADDED"));
-        assertNotNull(EventType.valueOf("SALARY_DETAIL_UPDATED"));
-        assertNotNull(EventType.valueOf("SALARY_DETAIL_DELETED"));
-        assertNotNull(EventType.valueOf("EXPENSE_ADDED"));
-        assertNotNull(EventType.valueOf("EXPENSE_UPDATED"));
-        assertNotNull(EventType.valueOf("EXPENSE_DELETED"));
-        assertNotNull(EventType.valueOf("PAYMENT_ADDED"));
-        assertNotNull(EventType.valueOf("PAYMENT_UPDATED"));
-        assertNotNull(EventType.valueOf("PAYMENT_DELETED"));
-
+        assertEquals(5, tipos.length, "Deve haver exatamente 5 tipos de eventos");
+        assertNotNull(EventType.valueOf("PAYROLL"));
+        assertNotNull(EventType.valueOf("EXPENSE"));
+        assertNotNull(EventType.valueOf("ACCOUNT"));
+        assertNotNull(EventType.valueOf("TRANSACTION"));
+        assertNotNull(EventType.valueOf("COMPETENCE"));
     }
 
     @Test
