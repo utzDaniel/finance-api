@@ -3,6 +3,9 @@ package br.com.finance.modules.account;
 import br.com.finance.config.ApiException;
 import br.com.finance.config.Violacao;
 import br.com.finance.modules.account.dto.*;
+import br.com.finance.modules.competence.CompetenceService;
+import br.com.finance.modules.competence.dto.CompetenceResponse;
+import br.com.finance.modules.competence.dto.CompetenceStatus;
 import br.com.finance.modules.event.EventProcessorEngine;
 import br.com.finance.modules.event.dto.AccountPayload;
 import br.com.finance.modules.event.dto.EventAction;
@@ -28,15 +31,18 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final KeycloakService keycloakService;
     private final EventProcessorEngine eventProcessorEngine;
+    private final CompetenceService competenceService;
 
     public AccountService(
             AccountRepository accountRepository,
             KeycloakService keycloakService,
-            EventProcessorEngine eventProcessorEngine
+            EventProcessorEngine eventProcessorEngine,
+            CompetenceService competenceService
     ) {
         this.accountRepository = accountRepository;
         this.keycloakService = keycloakService;
         this.eventProcessorEngine = eventProcessorEngine;
+        this.competenceService = competenceService;
     }
 
     public Page<AccountResponse> getAccount(Jwt jwt, LocalDate competence, Pageable pageable) {
@@ -48,6 +54,11 @@ public class AccountService {
     @Transactional
     public Page<AccountResponse> addAccount(Jwt jwt, LocalDate competence, AddAccountRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
+
+        CompetenceResponse competenceResponse =  competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
 
         findTypeOrThrow(request.type());
         findBankOrThrow(request.bank());

@@ -86,4 +86,10 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Integer>
             @Param("competence") LocalDate competence,
             @Param("account") Long account
     );
+
+    @Query("SELECT a FROM AccountEntity a WHERE a.userId = :userId AND a.competence = :competence")
+    List<AccountEntity> findAllByUserIdAndCompetence(
+            @Param("userId") String userId,
+            @Param("competence") LocalDate competence
+    );
 }

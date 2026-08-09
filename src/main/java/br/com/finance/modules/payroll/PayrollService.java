@@ -2,6 +2,9 @@ package br.com.finance.modules.payroll;
 
 import br.com.finance.config.ApiException;
 import br.com.finance.config.Violacao;
+import br.com.finance.modules.competence.CompetenceService;
+import br.com.finance.modules.competence.dto.CompetenceResponse;
+import br.com.finance.modules.competence.dto.CompetenceStatus;
 import br.com.finance.modules.event.EventProcessorEngine;
 import br.com.finance.modules.event.dto.EventAction;
 import br.com.finance.modules.event.dto.EventPayload;
@@ -26,15 +29,18 @@ public class PayrollService {
     private final PayrollRepository payrollRepository;
     private final KeycloakService keycloakService;
     private final EventProcessorEngine eventProcessorEngine;
+    private final CompetenceService competenceService;
 
     public PayrollService(
             PayrollRepository payrollRepository,
             KeycloakService keycloakService,
-            EventProcessorEngine eventProcessorEngine
+            EventProcessorEngine eventProcessorEngine,
+            CompetenceService competenceService
     ) {
         this.payrollRepository = payrollRepository;
         this.keycloakService = keycloakService;
         this.eventProcessorEngine = eventProcessorEngine;
+        this.competenceService = competenceService;
     }
 
     public Page<PayrollResponse> getPayroll(Jwt jwt, LocalDate competence, Pageable pageable) {
@@ -47,6 +53,11 @@ public class PayrollService {
     @Transactional
     public Page<PayrollResponse> addPayroll(Jwt jwt, LocalDate competence, AddPayrollRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
+
+        CompetenceResponse competenceResponse = competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
 
         findTypeOrThrow(request.type());
         findEventOrThrow(request.event());
@@ -70,6 +81,11 @@ public class PayrollService {
     @Transactional
     public Page<PayrollResponse> updatePayroll(Jwt jwt, LocalDate competence, UpdatePayrollRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
+
+        CompetenceResponse competenceResponse = competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
 
         PayrollEntity entity = payrollRepository.findByIdUserIdAndCompetence(request.id(), userId, competence)
                 .orElseThrow(() -> ApiException.notFound("Lançamento não encontrado"));
@@ -97,6 +113,11 @@ public class PayrollService {
     public Page<PayrollResponse> deletePayroll(Jwt jwt, LocalDate competence, DeletePayrollRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
 
+        CompetenceResponse competenceResponse = competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
+
         List<PayrollEntity> entities = payrollRepository.findAllByUserIdAndCompetence(request.ids(), userId, competence);
 
         if (entities.isEmpty() || entities.size() != request.ids().size()) {
@@ -111,6 +132,11 @@ public class PayrollService {
     @Transactional
     public Page<PayrollResponse> integratedPayroll(Jwt jwt, LocalDate competence, IntegratedPayrollRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
+
+        CompetenceResponse competenceResponse = competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
 
         List<PayrollEntity> entities = payrollRepository.findAllByUserIdAndCompetence(request.ids(), userId, competence);
 

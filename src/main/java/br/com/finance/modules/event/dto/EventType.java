@@ -6,6 +6,7 @@ public enum EventType {
     EXPENSE,
     ACCOUNT,
     PAYMENT,
-    TRANSACTION;
+    TRANSACTION,
+    COMPETENCE;
 }
 

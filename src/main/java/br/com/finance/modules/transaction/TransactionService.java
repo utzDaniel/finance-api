@@ -5,6 +5,9 @@ import br.com.finance.config.Violacao;
 import br.com.finance.modules.account.AccountRepository;
 import br.com.finance.modules.account.dto.AccountEntity;
 import br.com.finance.modules.account.dto.AccountUserResponse;
+import br.com.finance.modules.competence.CompetenceService;
+import br.com.finance.modules.competence.dto.CompetenceResponse;
+import br.com.finance.modules.competence.dto.CompetenceStatus;
 import br.com.finance.modules.event.EventProcessorEngine;
 import br.com.finance.modules.event.dto.EventAction;
 import br.com.finance.modules.event.dto.EventPayload;
@@ -29,19 +32,22 @@ public class TransactionService {
     private final TransactionAccountRepository transactionAccountRepository;
     private final AccountRepository accountRepository;
     private final EventProcessorEngine eventProcessorEngine;
+    private final CompetenceService competenceService;
 
     public TransactionService(
             KeycloakService keycloakService,
             TransactionRepository transactionRepository,
             TransactionAccountRepository transactionAccountRepository,
             AccountRepository accountRepository,
-            EventProcessorEngine eventProcessorEngine
+            EventProcessorEngine eventProcessorEngine,
+            CompetenceService competenceService
     ) {
         this.keycloakService = keycloakService;
         this.transactionRepository = transactionRepository;
         this.transactionAccountRepository = transactionAccountRepository;
         this.accountRepository = accountRepository;
         this.eventProcessorEngine = eventProcessorEngine;
+        this.competenceService = competenceService;
     }
 
     public Page<TransactionResponse> getTransaction(Jwt jwt, LocalDate competence, Pageable pageable, TransactionFilter filter) {
@@ -62,6 +68,11 @@ public class TransactionService {
     @Transactional
     public Page<TransactionResponse> transferTransaction(Jwt jwt, LocalDate competence, TransferTransactionRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
+
+        CompetenceResponse competenceResponse = competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
 
         findMethodOrThrow(request.method());
 

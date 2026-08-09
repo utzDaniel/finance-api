@@ -96,10 +96,11 @@ public class ExpenseEventStrategy implements EventStrategy<ExpensePayload> {
                 new Violacao("account", "Conta não encontrado: " + payload.account())
         )));
 
-        Set<Long> integrados = this.transactionExpenseRepository.findIdsByExpense(payload.entities().stream()
-                .map(ExpenseEntity::getId).toList());
+        Set<Long> integrados = this.transactionExpenseRepository.findIdsByExpense(
+                payload.entities().stream().map(ExpenseEntity::getId).toList());
 
         BigDecimal total = payload.entities().stream()
+                .filter(v -> !integrados.contains(v.getId()))
                 .map(ExpenseEntity::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (account.getBalance().compareTo(total) < 0) {

@@ -1,8 +1,10 @@
 package br.com.finance.modules.expense;
 
 import br.com.finance.config.ApiException;
-import br.com.finance.config.TimestampUtils;
 import br.com.finance.config.Violacao;
+import br.com.finance.modules.competence.CompetenceService;
+import br.com.finance.modules.competence.dto.CompetenceResponse;
+import br.com.finance.modules.competence.dto.CompetenceStatus;
 import br.com.finance.modules.event.EventProcessorEngine;
 import br.com.finance.modules.event.dto.EventAction;
 import br.com.finance.modules.event.dto.EventPayload;
@@ -27,15 +29,18 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final KeycloakService keycloakService;
     private final EventProcessorEngine eventProcessorEngine;
+    private final CompetenceService competenceService;
 
     public ExpenseService(
             ExpenseRepository expenseRepository,
             KeycloakService keycloakService,
-            EventProcessorEngine eventProcessorEngine
+            EventProcessorEngine eventProcessorEngine,
+            CompetenceService competenceService
     ) {
         this.expenseRepository = expenseRepository;
         this.keycloakService = keycloakService;
         this.eventProcessorEngine = eventProcessorEngine;
+        this.competenceService = competenceService;
     }
 
     public Page<ExpenseResponse> getExpense(Jwt jwt, LocalDate competence, Pageable pageable, ExpenseFilter filter) {
@@ -55,6 +60,11 @@ public class ExpenseService {
     @Transactional
     public Page<ExpenseResponse> addExpense(Jwt jwt, LocalDate competence, AddExpenseRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
+
+        CompetenceResponse competenceResponse = competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
 
         findCategoryOrThrow(request.category());
 
@@ -79,6 +89,11 @@ public class ExpenseService {
     @Transactional
     public Page<ExpenseResponse> updateExpense(Jwt jwt, LocalDate competence, UpdateExpenseRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
+
+        CompetenceResponse competenceResponse = competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
 
         ExpenseEntity expense = expenseRepository.findByIdUserIdAndCompetence(request.id(), userId, competence)
                 .orElseThrow(() -> ApiException.notFound("Despesa não encontrado"));
@@ -107,6 +122,11 @@ public class ExpenseService {
     public Page<ExpenseResponse> deleteExpense(Jwt jwt, LocalDate competence, DeleteExpenseRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
 
+        CompetenceResponse competenceResponse = competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
+
         List<ExpenseEntity> expenses = expenseRepository.findAllByDetailIdInAndUserId(request.ids(), userId, competence);
 
         if (expenses.isEmpty() || expenses.size() != request.ids().size()) {
@@ -122,6 +142,11 @@ public class ExpenseService {
     @Transactional
     public Page<ExpenseResponse> integratedExpense(Jwt jwt, LocalDate competence, IntegratedExpenseRequest request, Pageable pageable) {
         String userId = keycloakService.getIdUser(jwt);
+
+        CompetenceResponse competenceResponse = competenceService.getCompetence(jwt, competence);
+        if (competenceResponse.status().id() != CompetenceStatus.ABERTA.getId()) {
+            throw ApiException.badRequest("Mês já está fechado");
+        }
 
         if (!request.payDue() && request.dateTransaction() == null) {
             throw ApiException.badRequest(List.of(

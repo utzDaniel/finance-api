@@ -55,8 +55,8 @@ public class PayrollEventStrategy implements EventStrategy<PayrollPayload> {
 
     private void processDeleted(PayrollPayload payload) {
 
-        List<TransactionPayrollEntity> transactionPayrolls = this.transactionPayrollRepository.findByPayroll(payload.entities().stream()
-                .map(PayrollEntity::getId)
+        List<TransactionPayrollEntity> transactionPayrolls = this.transactionPayrollRepository.findByPayroll(
+                payload.entities().stream().map(PayrollEntity::getId)
                 .toList());
 
         if (transactionPayrolls.isEmpty()) {
