@@ -5,9 +5,13 @@ public enum PayrollEvent {
     LIQUIDO(1, "Líquido"),
     FLASH(8, "Flash"),
     ALELO(9, "Alelo"),
+    PLR(101, "PLR"),
+    SALARIO_13(281, "13º salário"),
+    FERIAS(300, "Ferias"),
     INSS(500, "INSS"),
     IRRF(505, "IRRF"),
-    VALE_ALIMENTACAO(686, "Vale Alimentação");
+    INSS_FERIAS(576, "INSS ferias"),
+    VALE_ALIMENTACAO(686, "Vale alimentação");
 
     private final int id;
     private final String description;

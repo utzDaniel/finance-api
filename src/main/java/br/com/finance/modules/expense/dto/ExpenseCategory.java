@@ -8,7 +8,7 @@ public enum ExpenseCategory {
     PRAZERES(4, "Prazeres"),
     INVESTIMENTO(5, "Investimento"),
     CONHECIMENTO(6, "Conhecimento"),
-    EMERGENCIA(6, "Emergencia");
+    EMERGENCIA(7, "Emergencia");
 
     private final int id;
 

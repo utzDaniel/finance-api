@@ -129,8 +129,8 @@ public class AccountService {
         return new AccountResponse(
                 dto.getId(),
                 dto.getName(),
-                new AccountBankResponse(type.getId(), type.getDescription()),
-                new AccountTypeResponse(bank.getId(), bank.getDescription()),
+                new AccountBankResponse(bank.getId(), bank.getDescription()),
+                new AccountTypeResponse(type.getId(), type.getDescription()),
                 new AccountLinkResponse(link.getId(), link.getDescription()),
                 dto.getBalance()
         );

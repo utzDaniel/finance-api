@@ -79,6 +79,12 @@ public class TransactionService {
         AccountEntity account = accountRepository.findByIdAndUserId(request.accountOrigin(), userId)
                 .orElseThrow(() -> ApiException.notFound("Conta não encontrado"));
 
+        if(!account.getCompetence().isEqual(competence)) {
+            throw ApiException.badRequest(List.of(
+                    new Violacao("accountOrigin", "Conta de outro mês: " + account.getCompetence())
+            ));
+        }
+
         if (!request.debit() && account.getBalance().compareTo(request.amount()) < 0) {
             throw ApiException.badRequest(List.of(
                     new Violacao("accountOrigin", "Saldo da conta insuficiente: " + account.getBalance())
@@ -88,6 +94,12 @@ public class TransactionService {
         if (request.accountDestination() != null) {
             AccountEntity accountDest = accountRepository.findById(request.accountDestination())
                     .orElseThrow(() -> ApiException.notFound("Conta destino não encontrado"));
+
+            if(!accountDest.getCompetence().isEqual(competence)) {
+                throw ApiException.badRequest(List.of(
+                        new Violacao("accountOrigin", "Conta destino de outro mês: " + accountDest.getCompetence())
+                ));
+            }
 
             if (request.debit() && accountDest.getBalance().compareTo(request.amount()) < 0) {
                 throw ApiException.badRequest(List.of(
